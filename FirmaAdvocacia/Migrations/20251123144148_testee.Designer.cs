@@ -4,6 +4,7 @@ using FirmaAdvocacia.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FirmaAdvocacia.Migrations
 {
     [DbContext(typeof(FirmaContext))]
-    partial class FirmaContextModelSnapshot : ModelSnapshot
+    [Migration("20251123144148_testee")]
+    partial class testee
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,7 +46,7 @@ namespace FirmaAdvocacia.Migrations
 
                     b.HasKey("AdvogadoId");
 
-                    b.ToTable("Advogados", (string)null);
+                    b.ToTable("Advogados");
                 });
 
             modelBuilder.Entity("FirmaAdvocacia.Models.Cliente", b =>
@@ -68,7 +71,7 @@ namespace FirmaAdvocacia.Migrations
 
                     b.HasKey("ClienteId");
 
-                    b.ToTable("Clientes", (string)null);
+                    b.ToTable("Clientes");
                 });
 
             modelBuilder.Entity("FirmaAdvocacia.Models.Processo", b =>
@@ -97,7 +100,7 @@ namespace FirmaAdvocacia.Migrations
 
                     b.HasIndex("ClienteId");
 
-                    b.ToTable("Processos", (string)null);
+                    b.ToTable("Processos");
                 });
 
             modelBuilder.Entity("FirmaAdvocacia.Models.Processo", b =>

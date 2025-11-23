@@ -10,6 +10,9 @@ namespace FirmaAdvocacia.Models
         public string Descricao { get; set; }
         [Display(Name = "Abertura do Processo")]
         public DateTime DataAbertura { get; set; }
+        [Display(Name = "Cliente")]
+        public int ClienteId { get; set; }
+        public Cliente ClienteOrigem { get; set; }
 
     }
 }

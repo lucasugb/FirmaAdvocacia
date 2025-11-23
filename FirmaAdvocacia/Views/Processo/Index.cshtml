@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<FirmaAdvocacia.Models.Processo>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Processos";
 }
 
-<h1>Index</h1>
+<h1>Processos</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -21,6 +21,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.DataAbertura)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ClienteOrigem)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -36,6 +39,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.DataAbertura)
             </td>
+                <th>
+                    @Html.DisplayNameFor(model => model.ClienteOrigem.Nome)
+                </th>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ProcessoId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.ProcessoId">Details</a> |

@@ -22,7 +22,8 @@ namespace FirmaAdvocacia.Controllers
         // GET: Processo
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Processos.ToListAsync());
+            var firmaContext = _context.Processos.Include(d => d.ClienteOrigem);
+            return View(await firmaContext.ToListAsync());
         }
 
         // GET: Processo/Details/5
@@ -34,6 +35,7 @@ namespace FirmaAdvocacia.Controllers
             }
 
             var processo = await _context.Processos
+                .Include(d => d.ClienteOrigem)
                 .FirstOrDefaultAsync(m => m.ProcessoId == id);
             if (processo == null)
             {
@@ -46,6 +48,7 @@ namespace FirmaAdvocacia.Controllers
         // GET: Processo/Create
         public IActionResult Create()
         {
+            ViewData["ClienteId"] = new SelectList(_context.Clientes, "ClienteId", "ClienteId");
             return View();
         }
 
@@ -78,6 +81,7 @@ namespace FirmaAdvocacia.Controllers
             {
                 return NotFound();
             }
+            ViewData["ClienteId"] = new SelectList(_context.Clientes, "ClienteId", "ClienteId");
             return View(processo);
         }
 
@@ -86,7 +90,7 @@ namespace FirmaAdvocacia.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProcessoId,Tipo,Descricao,DataAbertura")] Processo processo)
+        public async Task<IActionResult> Edit(int id, [Bind("ProcessoId,Tipo,Descricao,DataAbertura, ClienteId")] Processo processo)
         {
             if (id != processo.ProcessoId)
             {
@@ -113,6 +117,7 @@ namespace FirmaAdvocacia.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["ClienteId"] = new SelectList(_context.Clientes, "ClienteId", "ClienteId", processo.ClienteId);
             return View(processo);
         }
 
@@ -125,6 +130,7 @@ namespace FirmaAdvocacia.Controllers
             }
 
             var processo = await _context.Processos
+                .Include(d => d.ClienteOrigem)
                 .FirstOrDefaultAsync(m => m.ProcessoId == id);
             if (processo == null)
             {
