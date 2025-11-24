@@ -29,6 +29,24 @@
             @Html.DisplayFor(model => model.Email)
         </dd>
     </dl>
+    <h4>Processos do Cliente</h4>
+    <hr />
+
+    @if (Model.ClientesProcessos != null && Model.ClientesProcessos.Any())
+    {
+        <ul>
+            @foreach (var cp in Model.ClientesProcessos)
+            {
+                <li>
+                    Processo @cp.ProcessoOrigem.ProcessoId - @cp.ProcessoOrigem.Descricao
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>Este cliente não está vinculado a nenhum processo.</p>
+    }
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.ClienteId">Edit</a> |

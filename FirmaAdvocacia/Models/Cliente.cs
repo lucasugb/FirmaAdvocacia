@@ -11,5 +11,7 @@ namespace FirmaAdvocacia.Models
         public string Cpf { get; set; }
         [Display(Name = "e-mail")]
         public string Email { get; set; }
+
+        public ICollection<ClienteProcesso> ClientesProcessos { get; set; } = new List<ClienteProcesso>();
     }
 }

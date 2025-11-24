@@ -1,4 +1,4 @@
-﻿@model FirmaAdvocacia.Models.Processo
+﻿@model FirmaAdvocacia.ViewModels.ProcessoViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -13,23 +13,28 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Tipo" class="control-label"></label>
-                <input asp-for="Tipo" class="form-control" />
-                <span asp-validation-for="Tipo" class="text-danger"></span>
+                <label asp-for="Processo.Tipo" class="control-label"></label>
+                <input asp-for="Processo.Tipo" class="form-control" />
+                <span asp-validation-for="Processo.Tipo" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Descricao" class="control-label"></label>
-                <input asp-for="Descricao" class="form-control" />
-                <span asp-validation-for="Descricao" class="text-danger"></span>
+                <label asp-for="Processo.Descricao" class="control-label"></label>
+                <input asp-for="Processo.Descricao" class="form-control" />
+                <span asp-validation-for="Processo.Descricao" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DataAbertura" class="control-label"></label>
-                <input asp-for="DataAbertura" class="form-control" />
-                <span asp-validation-for="DataAbertura" class="text-danger"></span>
+                <label asp-for="Processo.DataAbertura" class="control-label"></label>
+                <input asp-for="Processo.DataAbertura" class="form-control" />
+                <span asp-validation-for="Processo.DataAbertura" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ClienteId" class="control-label"></label>
-                <select asp-for="ClienteId" class="form-control" asp-items="ViewBag.ClienteId"></select>
+                <label class="control-label">Clientes do Processo</label>
+                <select asp-for="ClientesSelecionados"
+                        asp-items="Model.ListaCliente"
+                        class="form-control"
+                        multiple>
+                </select>
+                <span asp-validation-for="ClientesSelecionados" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

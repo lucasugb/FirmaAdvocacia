@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using FirmaAdvocacia.Data;
+using FirmaAdvocacia.Models;
+using FirmaAdvocacia.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using FirmaAdvocacia.Data;
-using FirmaAdvocacia.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace FirmaAdvocacia.Controllers
 {
@@ -22,8 +23,10 @@ namespace FirmaAdvocacia.Controllers
         // GET: Processo
         public async Task<IActionResult> Index()
         {
-            var firmaContext = _context.Processos.Include(d => d.ClienteOrigem);
-            return View(await firmaContext.ToListAsync());
+            var processos = _context.Processos
+                .Include(p => p.ClientesProcessos)
+                .ThenInclude(cp => cp.ClienteOrigem);
+            return View(await processos.ToListAsync());
         }
 
         // GET: Processo/Details/5
@@ -35,8 +38,10 @@ namespace FirmaAdvocacia.Controllers
             }
 
             var processo = await _context.Processos
-                .Include(d => d.ClienteOrigem)
+                .Include(p => p.ClientesProcessos)
+                .ThenInclude(cp => cp.ClienteOrigem)
                 .FirstOrDefaultAsync(m => m.ProcessoId == id);
+
             if (processo == null)
             {
                 return NotFound();
@@ -48,8 +53,17 @@ namespace FirmaAdvocacia.Controllers
         // GET: Processo/Create
         public IActionResult Create()
         {
-            ViewData["ClienteId"] = new SelectList(_context.Clientes, "ClienteId", "ClienteId");
-            return View();
+            var vm = new ProcessoViewModel
+            {
+                ListaCliente = _context.Clientes
+            .Select(c => new SelectListItem
+            {
+                Value = c.ClienteId.ToString(),
+                Text = c.Nome
+            }).ToList()
+            };
+
+            return View(vm);
         }
 
         // POST: Processo/Create
@@ -57,69 +71,112 @@ namespace FirmaAdvocacia.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProcessoId,Tipo,Descricao,DataAbertura")] Processo processo)
+        public async Task<IActionResult> Create(ProcessoViewModel vm)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(processo);
+                _context.Processos.Add(vm.Processo);
+                await _context.SaveChangesAsync();
+
+                foreach (var id in vm.ClientesSelecionados)
+                {
+                    _context.ClientesProcessos.Add(new ClienteProcesso
+                    {
+                        ClienteId = id,
+                        ProcessoId = vm.Processo.ProcessoId
+                    });
+                }
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(processo);
+
+            vm.ListaCliente = _context.Clientes
+                .Select(c => new SelectListItem
+                {
+                    Value = c.ClienteId.ToString(),
+                    Text = c.Nome
+                })
+                .ToList();
+
+            return View(vm);
         }
 
         // GET: Processo/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var processo = await _context.Processos.FindAsync(id);
-            if (processo == null)
+            var processo = await _context.Processos
+                .Include(p => p.ClientesProcessos)
+                .FirstOrDefaultAsync(p => p.ProcessoId == id);
+
+            if (processo == null) return NotFound();
+
+            var vm = new ProcessoViewModel
             {
-                return NotFound();
-            }
-            ViewData["ClienteId"] = new SelectList(_context.Clientes, "ClienteId", "ClienteId");
-            return View(processo);
+                Processo = processo,
+                ClientesSelecionados = processo.ClientesProcessos
+                    .Select(cp => cp.ClienteId)
+                    .ToList(),
+                ListaCliente = _context.Clientes
+                    .Select(c => new SelectListItem
+                    {
+                        Value = c.ClienteId.ToString(),
+                        Text = c.Nome
+                    })
+                    .ToList()
+            };
+
+            return View(vm);
         }
+
 
         // POST: Processo/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProcessoId,Tipo,Descricao,DataAbertura, ClienteId")] Processo processo)
+        public async Task<IActionResult> Edit(int id, ProcessoViewModel vm)
         {
-            if (id != processo.ProcessoId)
-            {
+            if (id != vm.Processo.ProcessoId)
                 return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
-                try
+                _context.Update(vm.Processo);
+                await _context.SaveChangesAsync();
+
+                var antigos = _context.ClientesProcessos
+                    .Where(cp => cp.ProcessoId == id);
+
+                _context.ClientesProcessos.RemoveRange(antigos);
+                await _context.SaveChangesAsync();
+
+                foreach (var cliId in vm.ClientesSelecionados)
                 {
-                    _context.Update(processo);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProcessoExists(processo.ProcessoId))
+                    _context.ClientesProcessos.Add(new ClienteProcesso
                     {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                        ClienteId = cliId,
+                        ProcessoId = vm.Processo.ProcessoId
+                    });
                 }
+
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ClienteId"] = new SelectList(_context.Clientes, "ClienteId", "ClienteId", processo.ClienteId);
-            return View(processo);
+
+            vm.ListaCliente = _context.Clientes
+                .Select(c => new SelectListItem
+                {
+                    Value = c.ClienteId.ToString(),
+                    Text = c.Nome
+                })
+                .ToList();
+
+            return View(vm);
         }
+
 
         // GET: Processo/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -130,7 +187,8 @@ namespace FirmaAdvocacia.Controllers
             }
 
             var processo = await _context.Processos
-                .Include(d => d.ClienteOrigem)
+                .Include(p => p.ClientesProcessos)
+                .ThenInclude(cp => cp.ClienteOrigem)
                 .FirstOrDefaultAsync(m => m.ProcessoId == id);
             if (processo == null)
             {
@@ -146,8 +204,13 @@ namespace FirmaAdvocacia.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var processo = await _context.Processos.FindAsync(id);
+
             if (processo != null)
             {
+                // remove relações N-N antes
+                var relacoes = _context.ClientesProcessos.Where(cp => cp.ProcessoId == id);
+                _context.ClientesProcessos.RemoveRange(relacoes);
+
                 _context.Processos.Remove(processo);
             }
 

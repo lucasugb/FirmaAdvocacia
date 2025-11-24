@@ -22,23 +22,27 @@ namespace FirmaAdvocacia.Controllers
         // GET: Cliente
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Clientes.ToListAsync());
+            var clientes = await _context.Clientes
+                .Include(c => c.ClientesProcessos)
+                .ThenInclude(cp => cp.ProcessoOrigem)
+                .ToListAsync();
+
+            return View(clientes);
         }
 
         // GET: Cliente/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var cliente = await _context.Clientes
+                .Include(c => c.ClientesProcessos)
+                .ThenInclude(cp => cp.ProcessoOrigem)
                 .FirstOrDefaultAsync(m => m.ClienteId == id);
+
             if (cliente == null)
-            {
                 return NotFound();
-            }
 
             return View(cliente);
         }
@@ -62,7 +66,11 @@ namespace FirmaAdvocacia.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(cliente);
+            return View(await _context.Clientes
+                .Include(c => c.ClientesProcessos)
+                .ThenInclude(cp => cp.ProcessoOrigem)
+                .ToListAsync());
+
         }
 
         // GET: Cliente/Edit/5

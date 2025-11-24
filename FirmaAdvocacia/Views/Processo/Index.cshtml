@@ -22,7 +22,7 @@
                 @Html.DisplayNameFor(model => model.DataAbertura)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ClienteOrigem)
+                Clientes
             </th>
             <th></th>
         </tr>
@@ -39,9 +39,19 @@
             <td>
                 @Html.DisplayFor(modelItem => item.DataAbertura)
             </td>
-                <th>
-                    @Html.DisplayNameFor(model => model.ClienteOrigem.Nome)
-                </th>
+            <td>
+                @if (item.ClientesProcessos != null && item.ClientesProcessos.Any())
+                {
+                    foreach (var cp in item.ClientesProcessos)
+                    {
+                        @cp.ClienteOrigem?.Nome <br />
+                    }
+                }
+                else
+                {
+                    <i>Nenhum</i>
+                }
+            </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ProcessoId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.ProcessoId">Details</a> |

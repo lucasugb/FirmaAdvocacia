@@ -43,7 +43,7 @@ namespace FirmaAdvocacia.Migrations
 
                     b.HasKey("AdvogadoId");
 
-                    b.ToTable("Advogados", (string)null);
+                    b.ToTable("Advogados");
                 });
 
             modelBuilder.Entity("FirmaAdvocacia.Models.Cliente", b =>
@@ -68,7 +68,22 @@ namespace FirmaAdvocacia.Migrations
 
                     b.HasKey("ClienteId");
 
-                    b.ToTable("Clientes", (string)null);
+                    b.ToTable("Clientes");
+                });
+
+            modelBuilder.Entity("FirmaAdvocacia.Models.ClienteProcesso", b =>
+                {
+                    b.Property<int>("ClienteId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProcessoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ClienteId", "ProcessoId");
+
+                    b.HasIndex("ProcessoId");
+
+                    b.ToTable("ClientesProcessos");
                 });
 
             modelBuilder.Entity("FirmaAdvocacia.Models.Processo", b =>
@@ -78,9 +93,6 @@ namespace FirmaAdvocacia.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProcessoId"));
-
-                    b.Property<int>("ClienteId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("DataAbertura")
                         .HasColumnType("datetime2");
@@ -95,20 +107,36 @@ namespace FirmaAdvocacia.Migrations
 
                     b.HasKey("ProcessoId");
 
-                    b.HasIndex("ClienteId");
+                    b.ToTable("Processos");
+                });
 
-                    b.ToTable("Processos", (string)null);
+            modelBuilder.Entity("FirmaAdvocacia.Models.ClienteProcesso", b =>
+                {
+                    b.HasOne("FirmaAdvocacia.Models.Cliente", "ClienteOrigem")
+                        .WithMany("ClientesProcessos")
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("FirmaAdvocacia.Models.Processo", "ProcessoOrigem")
+                        .WithMany("ClientesProcessos")
+                        .HasForeignKey("ProcessoId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("ClienteOrigem");
+
+                    b.Navigation("ProcessoOrigem");
+                });
+
+            modelBuilder.Entity("FirmaAdvocacia.Models.Cliente", b =>
+                {
+                    b.Navigation("ClientesProcessos");
                 });
 
             modelBuilder.Entity("FirmaAdvocacia.Models.Processo", b =>
                 {
-                    b.HasOne("FirmaAdvocacia.Models.Cliente", "ClienteOrigem")
-                        .WithMany()
-                        .HasForeignKey("ClienteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ClienteOrigem");
+                    b.Navigation("ClientesProcessos");
                 });
 #pragma warning restore 612, 618
         }
