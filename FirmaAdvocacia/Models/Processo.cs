@@ -12,6 +12,8 @@ namespace FirmaAdvocacia.Models
         [Display(Name = "Abertura do Processo")]
         public DateTime DataAbertura { get; set; }
         public ICollection<ClienteProcesso> ClientesProcessos { get; set; } = new List<ClienteProcesso>();
+        public ICollection<AdvogadoProcesso> AdvogadosProcessos { get; set; } = new List<AdvogadoProcesso>();
+
 
     }
 }

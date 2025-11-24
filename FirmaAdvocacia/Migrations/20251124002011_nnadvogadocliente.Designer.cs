@@ -4,6 +4,7 @@ using FirmaAdvocacia.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FirmaAdvocacia.Migrations
 {
     [DbContext(typeof(FirmaContext))]
-    partial class FirmaContextModelSnapshot : ModelSnapshot
+    [Migration("20251124002011_nnadvogadocliente")]
+    partial class nnadvogadocliente
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,9 +41,8 @@ namespace FirmaAdvocacia.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OAB")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("OAB")
+                        .HasColumnType("int");
 
                     b.HasKey("AdvogadoId");
 
@@ -129,15 +131,15 @@ namespace FirmaAdvocacia.Migrations
             modelBuilder.Entity("FirmaAdvocacia.Models.AdvogadoProcesso", b =>
                 {
                     b.HasOne("FirmaAdvocacia.Models.Advogado", "AdvogadoOrigem")
-                        .WithMany("AdvogadosProcessos")
+                        .WithMany("ProcessosOrigem")
                         .HasForeignKey("AdvogadoId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("FirmaAdvocacia.Models.Processo", "ProcessoOrigem")
                         .WithMany("AdvogadosProcessos")
                         .HasForeignKey("ProcessoId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("AdvogadoOrigem");
@@ -150,13 +152,13 @@ namespace FirmaAdvocacia.Migrations
                     b.HasOne("FirmaAdvocacia.Models.Cliente", "ClienteOrigem")
                         .WithMany("ClientesProcessos")
                         .HasForeignKey("ClienteId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("FirmaAdvocacia.Models.Processo", "ProcessoOrigem")
                         .WithMany("ClientesProcessos")
                         .HasForeignKey("ProcessoId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("ClienteOrigem");
@@ -166,7 +168,7 @@ namespace FirmaAdvocacia.Migrations
 
             modelBuilder.Entity("FirmaAdvocacia.Models.Advogado", b =>
                 {
-                    b.Navigation("AdvogadosProcessos");
+                    b.Navigation("ProcessosOrigem");
                 });
 
             modelBuilder.Entity("FirmaAdvocacia.Models.Cliente", b =>

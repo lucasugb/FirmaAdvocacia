@@ -4,6 +4,7 @@ using FirmaAdvocacia.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FirmaAdvocacia.Migrations
 {
     [DbContext(typeof(FirmaContext))]
-    partial class FirmaContextModelSnapshot : ModelSnapshot
+    [Migration("20251124010727_oabstring")]
+    partial class oabstring
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -131,13 +134,13 @@ namespace FirmaAdvocacia.Migrations
                     b.HasOne("FirmaAdvocacia.Models.Advogado", "AdvogadoOrigem")
                         .WithMany("AdvogadosProcessos")
                         .HasForeignKey("AdvogadoId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("FirmaAdvocacia.Models.Processo", "ProcessoOrigem")
                         .WithMany("AdvogadosProcessos")
                         .HasForeignKey("ProcessoId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("AdvogadoOrigem");
@@ -150,13 +153,13 @@ namespace FirmaAdvocacia.Migrations
                     b.HasOne("FirmaAdvocacia.Models.Cliente", "ClienteOrigem")
                         .WithMany("ClientesProcessos")
                         .HasForeignKey("ClienteId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("FirmaAdvocacia.Models.Processo", "ProcessoOrigem")
                         .WithMany("ClientesProcessos")
                         .HasForeignKey("ProcessoId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("ClienteOrigem");

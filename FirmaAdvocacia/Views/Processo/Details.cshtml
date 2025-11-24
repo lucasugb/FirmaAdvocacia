@@ -29,6 +29,20 @@
             @Html.DisplayFor(model => model.DataAbertura)
         </dd>
     </dl>
+    <h3>Advogados</h3>
+    <ul>
+        @foreach (var ap in Model.AdvogadosProcessos)
+        {
+            <li>@ap.AdvogadoOrigem.Nome — OAB @ap.AdvogadoOrigem.OAB</li>
+        }
+    </ul>
+    <h3>Clientes</h3>
+    <ul>
+        @foreach (var cp in Model.ClientesProcessos)
+        {
+            <li>@cp.ClienteOrigem.Nome — CPF @cp.ClienteOrigem.Cpf</li>
+        }
+    </ul>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.ProcessoId">Edit</a> |

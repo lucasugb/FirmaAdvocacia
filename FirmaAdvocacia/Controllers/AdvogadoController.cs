@@ -62,7 +62,10 @@ namespace FirmaAdvocacia.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(advogado);
+            return View(await _context.Advogados
+                .Include(a => a.AdvogadosProcessos)
+                .ThenInclude(ap => ap.ProcessoOrigem)
+                .ToListAsync());
         }
 
         // GET: Advogado/Edit/5

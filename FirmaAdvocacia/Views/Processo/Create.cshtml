@@ -37,6 +37,14 @@
                 <span asp-validation-for="ClientesSelecionados" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label class="control-label">Advogados do Processo</label>
+                <select asp-for="AdvogadosSelecionados"
+                        asp-items="Model.ListaAdvogado"
+                        class="form-control"
+                        multiple>
+                </select>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>

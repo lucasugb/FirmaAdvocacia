@@ -24,6 +24,9 @@
             <th>
                 Clientes
             </th>
+            <th>
+                Advogados
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -45,6 +48,19 @@
                     foreach (var cp in item.ClientesProcessos)
                     {
                         @cp.ClienteOrigem?.Nome <br />
+                    }
+                }
+                else
+                {
+                    <i>Nenhum</i>
+                }
+            </td>
+            <td>
+                @if (item.AdvogadosProcessos != null && item.AdvogadosProcessos.Any())
+                {
+                    foreach (var ap in item.AdvogadosProcessos)
+                    {
+                        @ap.AdvogadoOrigem?.Nome <br />
                     }
                 }
                 else
