@@ -22,6 +22,11 @@ namespace FirmaAdvocacia.Controllers
         // GET: Advogado
         public async Task<IActionResult> Index()
         {
+            var advogados = await _context.Advogados
+                .Include(a => a.AdvogadosProcessos)
+                .ThenInclude(ap => ap.ProcessoOrigem)
+                .ToListAsync();
+
             return View(await _context.Advogados.ToListAsync());
         }
 
