@@ -34,16 +34,15 @@ namespace FirmaAdvocacia.Controllers
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var advogado = await _context.Advogados
+                .Include(a => a.AdvogadosProcessos)
+                .ThenInclude(ap => ap.ProcessoOrigem)
                 .FirstOrDefaultAsync(m => m.AdvogadoId == id);
+
             if (advogado == null)
-            {
                 return NotFound();
-            }
 
             return View(advogado);
         }

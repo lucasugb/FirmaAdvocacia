@@ -29,6 +29,24 @@
             @Html.DisplayFor(model => model.Especialidade)
         </dd>
     </dl>
+    <h4>Processos do Advogado</h4>
+    <hr />
+
+    @if (Model.AdvogadosProcessos != null && Model.AdvogadosProcessos.Any())
+    {
+        <ul>
+            @foreach (var cp in Model.AdvogadosProcessos)
+            {
+                <li>
+                    @cp.ProcessoOrigem.Tipo - @cp.ProcessoOrigem.Descricao
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>Este advogado não está vinculado a nenhum processo.</p>
+    }
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.AdvogadoId">Edit</a> |
